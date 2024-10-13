@@ -55,7 +55,11 @@ function displayProducts(productsToDisplay) {
                 <td>${product.product_name}</td>
                 <td>${product.product_category}</td>
                 <td>${product.product_quantity}</td>
-                <td>${product.product_price.toLocaleString()}</td>
+                <td>${new Intl.NumberFormat('id-ID', {
+                  style: 'currency',
+                  currency: 'IDR',
+                  minimumFractionDigits: 0,
+                }).format(product.product_price)}</td>
                 <td>${formatDate(product.product_exp)}</td>
                 <td>
                     <button class="btn btn-sm btn-warning mb-2" onclick="editProduct(${
