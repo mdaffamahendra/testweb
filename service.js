@@ -165,8 +165,8 @@ async function addProduct(product) {
     },
     body: JSON.stringify(product)
   })
-    .then((res) => alert(`Sukses Menambahkan Data!`))
-    .catch((e) => alert(`Ada yang error`));
+    .then((res) => alert(`Sukses menambahkan data!`))
+    .catch((e) => alert(`Gagal menambahkan data!`));
   products.push(product);
   applyFiltersAndSort();
   document.getElementById("productForm").reset();
@@ -262,7 +262,7 @@ async function deleteProduct(id) {
           "Content-Type": "application/json",
           Authorization: "Bearer FadhlanGanteng"
         }
-      }).then((e) => alert(`Sukses Menghapus Data!`));
+      });
       applyFiltersAndSort();
       Swal.fire("Deleted!", "Your product has been deleted.", "success");
     }
