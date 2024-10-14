@@ -2,20 +2,39 @@
 const BASE_URL = "https://call-api.lanzzstore.com";
 let products = [];
 
+const getProduk = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/products/`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer FadhlanGanteng",
+      },
+    });
+    let data = await response.json();
+    data =
+      data.status === 200
+        ? { error: false, message: data?.message, data: data.data }
+        : { error: true, message: data?.message, data: null };
+    return data;
+  } catch (e) {
+    return { error: true, message: e?.message, errorInfo: e };
+  }
+};
+
 (async () => {
   try {
     const response = await fetch(`${BASE_URL}/api/products/`, {
       method: "GET",
       headers: {
-        Authorization: "Bearer FadhlanGanteng"
-      }
+        Authorization: "Bearer FadhlanGanteng",
+      },
     });
 
     const { data } = await response.json();
 
     // Remove _id property and use product_id
     products = data.map(({ _id, ...rest }) => rest);
-    document.getElementById('totalProduct').textContent = products.length;
+    document.getElementById("totalProduct").textContent = products.length;
   } catch (e) {
     products = [
       {
@@ -24,9 +43,8 @@ let products = [];
         product_category: "Electronics",
         product_quantity: 333,
         product_price: 12000003330,
-        product_exp: "2025-12-31T00:00:00.000Z"
-      }
-      // ... (other dummy products)
+        product_exp: "2025-12-31T00:00:00.000Z",
+      },
     ];
     console.error(e);
   }
@@ -55,9 +73,9 @@ function displayProducts(productsToDisplay) {
                 <td>${product.product_name}</td>
                 <td>${product.product_category}</td>
                 <td>${product.product_quantity}</td>
-                <td>${new Intl.NumberFormat('id-ID', {
-                  style: 'currency',
-                  currency: 'IDR',
+                <td>${new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
                   minimumFractionDigits: 0,
                 }).format(product.product_price)}</td>
                 <td>${formatDate(product.product_exp)}</td>
@@ -148,14 +166,23 @@ function populateCategoryFilter() {
 
 // Add new product
 async function addProduct(product) {
-  product.product_id = products.length + 1; // Assign new product_id
+  const idManual = document.getElementById("productid").value;
+  let newDataFetch = await getProduk();
+  newDataFetch = newDataFetch.error
+    ? products.length + 1
+    : generateUniqueId(newDataFetch.data);
+  if (idManual == "")
+    alert(
+      `Disarankan Untuk Menginput Manual ID nya tuk menghindari kesalahan yang terjadi.`
+    );
+  product.product_id = idManual !== "" ? idManual : newDataFetch; // products.length + 1 Assign new product_id
   await fetch(`${BASE_URL}/api/products/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer FadhlanGanteng"
+      Authorization: "Bearer FadhlanGanteng",
     },
-    body: JSON.stringify(product)
+    body: JSON.stringify(product),
   })
     .then((res) => alert(`Sukses menambahkan data!`))
     .catch((e) => alert(`Gagal menambahkan data!`));
@@ -199,6 +226,20 @@ function editProduct(id) {
     `;
 }
 
+function generateUniqueId(existingIds) {
+  let newId;
+  let isUnique = false;
+  // Konversi array ke Set untuk pencarian lebih cepat
+  const existingIdsSet = new Set(existingIds);
+  while (!isUnique) {
+    newId = Math.floor(Math.random() * 10000) + 1;
+    if (!existingIdsSet.has(newId)) {
+      isUnique = true;
+    }
+  }
+  return newId;
+}
+
 // Save edited product
 async function saveProduct(id) {
   const row = document.querySelector(`tr[data-id="${id}"]`);
@@ -212,15 +253,15 @@ async function saveProduct(id) {
     product_price: parseFloat(
       row.querySelector('input[name="product_price"]').value
     ),
-    product_exp: row.querySelector('input[name="product_exp"]').value
+    product_exp: row.querySelector('input[name="product_exp"]').value,
   };
   fetch(`${BASE_URL}/api/products/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer FadhlanGanteng"
+      Authorization: "Bearer FadhlanGanteng",
     },
-    body: JSON.stringify(updatedProduct)
+    body: JSON.stringify(updatedProduct),
   })
     .then((res) => alert(`Sukses mengedit data!`))
     .catch((e) => alert(`Gagal mengedit data`));
@@ -244,7 +285,7 @@ async function deleteProduct(id) {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!"
+    confirmButtonText: "Yes, delete it!",
   }).then(async (result) => {
     if (result.isConfirmed) {
       products = products.filter((product) => product.product_id !== id);
@@ -252,8 +293,8 @@ async function deleteProduct(id) {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer FadhlanGanteng"
-        }
+          Authorization: "Bearer FadhlanGanteng",
+        },
       });
       applyFiltersAndSort();
       Swal.fire("Deleted!", "Your product has been deleted.", "success");
@@ -273,7 +314,7 @@ document
         document.getElementById("productQuantity").value
       ),
       product_price: parseFloat(document.getElementById("productPrice").value),
-      product_exp: document.getElementById("productExp").value
+      product_exp: document.getElementById("productExp").value,
     };
     await addProduct(product);
   });
@@ -289,22 +330,18 @@ document
   .getElementById("categoryFilter")
   .addEventListener("change", () => applyFiltersAndSort());
 
-  document.getElementById('btnAddProduct').addEventListener('click', () => {
-    document.getElementById('contentContainer').style.display = 'none';
-    document.getElementById('formContainer').classList.remove("d-none");
-    document.getElementById('btnAddProduct').style.display = 'none'
-  })
-  
-  document.getElementById('btnCancelAddForm').addEventListener('click', () => {
-    document.getElementById('contentContainer').style.display = 'block';
-    document.getElementById('formContainer').classList.add("d-none");
-    document.getElementById('btnAddProduct').style.display = 'block';
-  })
+document.getElementById("btnAddProduct").addEventListener("click", () => {
+  document.getElementById("contentContainer").style.display = "none";
+  document.getElementById("formContainer").classList.remove("d-none");
+  document.getElementById("btnAddProduct").style.display = "none";
+});
 
-
+document.getElementById("btnCancelAddForm").addEventListener("click", () => {
+  document.getElementById("contentContainer").style.display = "block";
+  document.getElementById("formContainer").classList.add("d-none");
+  document.getElementById("btnAddProduct").style.display = "block";
+});
 
 // Initialize product display
 populateCategoryFilter();
 applyFiltersAndSort();
-
-
