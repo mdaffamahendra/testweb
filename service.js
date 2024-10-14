@@ -171,6 +171,7 @@ async function addProduct(product) {
   applyFiltersAndSort();
   document.getElementById("productForm").reset();
   populateCategoryFilter();
+  location.reload();
 }
 
 // Edit product
@@ -235,6 +236,7 @@ async function saveProduct(id) {
   const index = products.findIndex((p) => p.product_id === id);
   products[index] = updatedProduct;
   row.classList.remove("edit-mode");
+  location.reload()
   applyFiltersAndSort();
 }
 
@@ -263,6 +265,7 @@ async function deleteProduct(id) {
           Authorization: "Bearer FadhlanGanteng"
         }
       }).then((e) => alert(`Sukses Menghapus Data!`));
+      location.reload();
       applyFiltersAndSort();
       Swal.fire("Deleted!", "Your product has been deleted.", "success");
     }
