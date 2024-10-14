@@ -7,7 +7,6 @@ const getProduk = async () => {
     const response = await fetch(`${BASE_URL}/api/products/`, {
       method: "GET",
       headers: {
-<<<<<<< HEAD
         Authorization: "Bearer FadhlanGanteng",
       },
     });
@@ -21,18 +20,6 @@ const getProduk = async () => {
     return { error: true, message: e?.message, errorInfo: e };
   }
 };
-=======
-        Authorization: "Bearer FadhlanGanteng"
-      }
-    });
-    let data = await response.json();
-    data = data.status === 200 ? { error: false, message: data?.message, data: data.data } : { error: true, message: data?.message, data: null };
-    return data;
-   } catch(e){
-      return { error: true, message: e?.message, errorInfo: e}
-   }
-}
->>>>>>> f8cc6dbb23ba12a672cb9dcb82b4394a2dedbaad
 
 (async () => {
   try {
@@ -163,18 +150,10 @@ function applyFiltersAndSort(productsToProcess = products) {
 // Populate category filter
 function populateCategoryFilter() {
   const categoryFilter = document.getElementById("categoryFilter");
-  const categoryProduct = document.getElementById("productCategory");
 
   const categories = [
     ...new Set(products.map((product) => product.product_category)),
   ];
-
-  categories.forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category; // Nilai yang akan dikirim saat form disubmit
-    option.textContent = category; // Teks yang akan ditampilkan di dropdown
-    categoryProduct.appendChild(option); // Tambahkan ke elemen select
-  });
 
   // Jika Anda ingin juga menambahkan kategori ke categoryFilter, buat elemen option baru
   categories.forEach((category) => {
@@ -189,7 +168,6 @@ function populateCategoryFilter() {
 async function addProduct(product) {
   const idManual = document.getElementById("productid").value;
   let newDataFetch = await getProduk();
-<<<<<<< HEAD
   newDataFetch = newDataFetch.error
     ? products.length + 1
     : generateUniqueId(newDataFetch.data);
@@ -198,12 +176,6 @@ async function addProduct(product) {
       `Disarankan Untuk Menginput Manual ID nya tuk menghindari kesalahan yang terjadi.`
     );
   product.product_id = idManual !== "" ? idManual : newDataFetch; // products.length + 1 Assign new product_id
-=======
-  newDataFetch = newDataFetch.error ? products.length + 1 : generateUniqueId(newDataFetch.data);
-  if(idManual == "") alert(`Disarankan Untuk Menginput Manual ID nya tuk menghindari kesalahan yang terjadi.`)
-  product.product_id =  idManual !== "" ?  idManual : newDataFetch; // products.length + 1 Assign new product_id
-  
->>>>>>> f8cc6dbb23ba12a672cb9dcb82b4394a2dedbaad
   await fetch(`${BASE_URL}/api/products/`, {
     method: "POST",
     headers: {
@@ -212,8 +184,8 @@ async function addProduct(product) {
     },
     body: JSON.stringify(product),
   })
-    .then((res) => alert(`Sukses Menambahkan Data!`))
-    .catch((e) => console.log(e));
+    .then((res) => alert(`Sukses menambahkan data!`))
+    .catch((e) => alert(`Gagal menambahkan data!`));
   products.push(product);
   applyFiltersAndSort();
   document.getElementById("productForm").reset();
@@ -254,37 +226,20 @@ function editProduct(id) {
     `;
 }
 
-<<<<<<< HEAD
 function generateUniqueId(existingIds) {
   let newId;
   let isUnique = false;
   // Konversi array ke Set untuk pencarian lebih cepat
   const existingIdsSet = new Set(existingIds);
-=======
-// Fungsi Untuk Membuat ID yang numerik
-function generateUniqueId(existingIds) {
-  let newId;
-  let isUnique = false;
-
-  // Konversi array ke Set untuk pencarian lebih cepat
-  const existingIdsSet = new Set(existingIds);
-
->>>>>>> f8cc6dbb23ba12a672cb9dcb82b4394a2dedbaad
   while (!isUnique) {
     newId = Math.floor(Math.random() * 10000) + 1;
     if (!existingIdsSet.has(newId)) {
       isUnique = true;
     }
   }
-<<<<<<< HEAD
   return newId;
 }
 
-=======
-
-  return newId;
-}
->>>>>>> f8cc6dbb23ba12a672cb9dcb82b4394a2dedbaad
 // Save edited product
 async function saveProduct(id) {
   const row = document.querySelector(`tr[data-id="${id}"]`);
@@ -338,15 +293,9 @@ async function deleteProduct(id) {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-<<<<<<< HEAD
           Authorization: "Bearer FadhlanGanteng",
         },
       });
-=======
-          Authorization: "Bearer FadhlanGanteng"
-        }
-      }).then((e) => alert(`Sukses Menghapus Data!`));
->>>>>>> f8cc6dbb23ba12a672cb9dcb82b4394a2dedbaad
       applyFiltersAndSort();
       Swal.fire("Deleted!", "Your product has been deleted.", "success");
     }
@@ -366,10 +315,6 @@ document
       ),
       product_price: parseFloat(document.getElementById("productPrice").value),
       product_exp: document.getElementById("productExp").value,
-<<<<<<< HEAD
-=======
-     
->>>>>>> f8cc6dbb23ba12a672cb9dcb82b4394a2dedbaad
     };
     await addProduct(product);
   });
