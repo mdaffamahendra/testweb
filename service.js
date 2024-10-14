@@ -132,18 +132,10 @@ function applyFiltersAndSort(productsToProcess = products) {
 // Populate category filter
 function populateCategoryFilter() {
   const categoryFilter = document.getElementById("categoryFilter");
-  const categoryProduct = document.getElementById("productCategory");
 
   const categories = [
     ...new Set(products.map((product) => product.product_category)),
   ];
-
-  categories.forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category; // Nilai yang akan dikirim saat form disubmit
-    option.textContent = category; // Teks yang akan ditampilkan di dropdown
-    categoryProduct.appendChild(option); // Tambahkan ke elemen select
-  });
 
   // Jika Anda ingin juga menambahkan kategori ke categoryFilter, buat elemen option baru
   categories.forEach((category) => {
