@@ -28,7 +28,7 @@
       html {
         box-sizing: border-box;
         scroll-behavior: smooth;
-        font-family: 'Poppins', 'sans-serif';
+        font-family: "Poppins", "sans-serif";
       }
       .w-33 {
         flex: 0 0 33.33%; /* Set elemen agar mengambil 1/3 lebar */
@@ -130,7 +130,9 @@
   <body class="bg-light">
     <div class="bg-light">
       <div class="container py-3 mb-3 bg-primary rounded shadow">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3">
+        <div
+          class="d-flex flex-column flex-md-row justify-content-between align-items-center p-3"
+        >
           <h4 class="text-white">Product Management System</h4>
           <button
             id="btnAddProduct"
@@ -233,8 +235,11 @@
           </div>
         </div>
 
-        <div class="table-wrapper table-responsive" style="overflow-x: auto;">
-          <table class="table table-striped table-hover" style="min-width: 1000px;">
+        <div class="table-wrapper table-responsive" style="overflow-x: auto">
+          <table
+            class="table table-striped table-hover"
+            style="min-width: 1000px"
+          >
             <thead class="table-dark sticky-header">
               <tr>
                 <th class="text-center">ID</th>
@@ -249,7 +254,6 @@
             <tbody id="productTableBody" class="text-center"></tbody>
           </table>
         </div>
-        
       </div>
       <!-- Product Table -->
 
@@ -278,23 +282,12 @@
           <h3 class="mb-2">Add New Product</h3>
           <form id="productForm">
             <div class="mb-3">
-<<<<<<< HEAD
               <div class="mb-3">
                 <label for="productid" class="form-label">Product ID</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="productid"
-                />
+                <input type="text" class="form-control" id="productid" />
               </div>
-=======
               <label for="productid" class="form-label">Product ID</label>
-              <input
-                type="text"
-                class="form-control"
-                id="productid"
-              />
->>>>>>> f8cc6dbb23ba12a672cb9dcb82b4394a2dedbaad
+              <input type="text" class="form-control" id="productid" />
             </div>
             <div class="mb-3">
               <label for="productName" class="form-label">Product Name</label>
@@ -309,7 +302,6 @@
               <label for="productCategory" class="form-label">Category</label>
               <select class="form-select" id="productCategory" required>
                 <option value="" disabled selected>Select a category</option>
-<<<<<<< HEAD
                 <option>Beras</option>
                 <option>Gula</option>
                 <option>Minyak Goreng</option>
@@ -324,8 +316,6 @@
                 <option>Gas Elpiji</option>
                 <option>Sabun dan Deterjen</option>
                 <option>Camilan</option>
-=======
->>>>>>> f8cc6dbb23ba12a672cb9dcb82b4394a2dedbaad
               </select>
             </div>
             <div class="mb-3">
