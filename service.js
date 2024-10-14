@@ -2,6 +2,22 @@
 const BASE_URL = "https://call-api.lanzzstore.com";
 let products = [];
 
+const getProduk = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/products/`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer FadhlanGanteng"
+      }
+    });
+    let data = await response.json();
+    data = data.status === 200 ? { error: false, message: data?.message, data: data.data } : { error: true, message: data?.message, data: null };
+    return data;
+   } catch(e){
+      return { error: true, message: e?.message, errorInfo: e}
+   }
+}
+
 (async () => {
   try {
     const response = await fetch(`${BASE_URL}/api/products/`, {
@@ -132,10 +148,18 @@ function applyFiltersAndSort(productsToProcess = products) {
 // Populate category filter
 function populateCategoryFilter() {
   const categoryFilter = document.getElementById("categoryFilter");
+  const categoryProduct = document.getElementById("productCategory");
 
   const categories = [
     ...new Set(products.map((product) => product.product_category)),
   ];
+
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category; // Nilai yang akan dikirim saat form disubmit
+    option.textContent = category; // Teks yang akan ditampilkan di dropdown
+    categoryProduct.appendChild(option); // Tambahkan ke elemen select
+  });
 
   // Jika Anda ingin juga menambahkan kategori ke categoryFilter, buat elemen option baru
   categories.forEach((category) => {
@@ -148,7 +172,12 @@ function populateCategoryFilter() {
 
 // Add new product
 async function addProduct(product) {
-  product.product_id = products.length + 1; // Assign new product_id
+  const idManual = document.getElementById("productid").value;
+  let newDataFetch = await getProduk();
+  newDataFetch = newDataFetch.error ? products.length + 1 : generateUniqueId(newDataFetch.data);
+  if(idManual == "") alert(`Disarankan Untuk Menginput Manual ID nya tuk menghindari kesalahan yang terjadi.`)
+  product.product_id =  idManual !== "" ?  idManual : newDataFetch; // products.length + 1 Assign new product_id
+  
   await fetch(`${BASE_URL}/api/products/`, {
     method: "POST",
     headers: {
@@ -157,8 +186,8 @@ async function addProduct(product) {
     },
     body: JSON.stringify(product)
   })
-    .then((res) => alert(`Sukses menambahkan data!`))
-    .catch((e) => alert(`Gagal menambahkan data!`));
+    .then((res) => alert(`Sukses Menambahkan Data!`))
+    .catch((e) => console.log(e));
   products.push(product);
   applyFiltersAndSort();
   document.getElementById("productForm").reset();
@@ -199,6 +228,23 @@ function editProduct(id) {
     `;
 }
 
+// Fungsi Untuk Membuat ID yang numerik
+function generateUniqueId(existingIds) {
+  let newId;
+  let isUnique = false;
+
+  // Konversi array ke Set untuk pencarian lebih cepat
+  const existingIdsSet = new Set(existingIds);
+
+  while (!isUnique) {
+    newId = Math.floor(Math.random() * 10000) + 1;
+    if (!existingIdsSet.has(newId)) {
+      isUnique = true;
+    }
+  }
+
+  return newId;
+}
 // Save edited product
 async function saveProduct(id) {
   const row = document.querySelector(`tr[data-id="${id}"]`);
@@ -254,7 +300,7 @@ async function deleteProduct(id) {
           "Content-Type": "application/json",
           Authorization: "Bearer FadhlanGanteng"
         }
-      });
+      }).then((e) => alert(`Sukses Menghapus Data!`));
       applyFiltersAndSort();
       Swal.fire("Deleted!", "Your product has been deleted.", "success");
     }
@@ -273,7 +319,8 @@ document
         document.getElementById("productQuantity").value
       ),
       product_price: parseFloat(document.getElementById("productPrice").value),
-      product_exp: document.getElementById("productExp").value
+      product_exp: document.getElementById("productExp").value,
+     
     };
     await addProduct(product);
   });
